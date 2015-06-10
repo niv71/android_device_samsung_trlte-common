@@ -122,6 +122,27 @@ static char *camera_fixup_getparams(int __attribute__((unused)) id,
     params.dump();
 #endif
 
+    //Hide nv12-venus from Android.
+    if (strcmp (params.getPreviewFormat(), "nv12-venus") == 0)
+          params.set("preview-format", "yuv420sp");
+
+    int minfps, maxfps;
+    params.getPreviewFpsRange(&minfps, &maxfps);
+    if (minfps >= 60000)
+    {
+	params.set("preview-frame-rate-values", "15,24,30,60,120");
+        if (minfps >= 120000)
+	{
+	     params.set("fast-fps-mode", "2");
+             params.set("preview-frame-rate", "120");
+	}
+	else
+	{
+	     params.set("fast-fps-mode", "1");
+	     params.set("preview-frame-rate", "60");
+	}
+    }
+
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
 
@@ -144,8 +165,26 @@ static char *camera_fixup_setparams(int id, const char *settings)
 #endif
 
     if (is480Preview(params)) {
-        ALOGV("%s: 480p preview detected, switching preview format to nv12-venus", __FUNCTION__);
-        params.set("preview-format", "nv12-venus");
+        ALOGV("%s: 480p preview detected, switching preview format to yuv420p", __FUNCTION__);
+        params.set("preview-format", "yuv420p");
+    }
+
+    int minfps, maxfps;
+    params.getPreviewFpsRange(&minfps, &maxfps);
+    if (minfps >= 60000)
+    {
+	params.set("preview-frame-rate-values", "15,24,30,60,120");
+        if (minfps >= 120000)
+	{
+	     params.set("fast-fps-mode", "2");
+             params.set("preview-frame-rate", "120");
+	}
+	else
+	{
+	     params.set("fast-fps-mode", "1");
+	     params.set("preview-frame-rate", "60");
+	}
+>>>>>>> cm/cm-12.1
     }
 
     android::String8 strParams = params.flatten();

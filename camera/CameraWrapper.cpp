@@ -184,7 +184,6 @@ static char *camera_fixup_setparams(int id, const char *settings)
 	     params.set("fast-fps-mode", "1");
 	     params.set("preview-frame-rate", "60");
 	}
->>>>>>> cm/cm-12.1
     }
 
     android::String8 strParams = params.flatten();
